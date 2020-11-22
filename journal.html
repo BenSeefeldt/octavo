@@ -142,6 +142,7 @@
         }
 
         .button {
+            background-color: white;
             font-family: sans-serif;
             font-size: 0.9rem;
             display: inline-block;
@@ -153,6 +154,7 @@
             float: right;
             border-radius: 0.25rem;
             margin-left: 1rem;
+            cursor: pointer;
         }
         .button:hover {
             background-color: ghostwhite;
@@ -258,9 +260,8 @@
             margin: 0.25em;
         }
         #imginput {
-            color:transparent;
-            float: right;
-            width: 9em;
+            display: none;
+            visibility: hidden;
         }
     </style>
 </head>
@@ -274,7 +275,8 @@
     <div style="margin-top: 1em;">
     <div id="savebutton" class="button">Save</div>
     <div id="editbutton" class="button">Edit</div>
-    <input id="imginput" type='file' class="button" style="float: left; margin-left: 0px;">
+    <label class="button" for="imginput" style="float: left; margin-left: 0px;">Select file</label>
+    <input id="imginput" type='file'>
     </div>
 </body>
 <script>
