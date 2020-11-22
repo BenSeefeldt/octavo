@@ -105,7 +105,6 @@
             line-height: 1.4;
             text-align: justify;
             position: relative;
-            margin-bottom: 2.5rem;
         }
 
         /* p {
@@ -131,7 +130,7 @@
             font: 1.1em'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
             white-space: pre-wrap;
             margin: -1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 0rem;
             padding: 1rem;
             border: 1px solid gray;
             border-radius: 5px;
@@ -248,6 +247,20 @@
         .red {
             color: #B50000;
         }
+        #images {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1em;
+        }
+        .listimg {
+            max-height: 15em;
+            margin: 0.25em;
+        }
+        #imginput {
+            color:transparent;
+            float: right;
+        }
     </style>
 </head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
@@ -256,8 +269,12 @@
 <body>
     <div id="content"></div>
     <div id="editor" contenteditable="true"></div>
+    <div id="images"></div>
+    <div style="margin-top: 1em;">
     <div id="savebutton" class="button">Save</div>
     <div id="editbutton" class="button">Edit</div>
+    <input id="imginput" type='file' class="button" style="float: left; margin-left: 0px;">
+    </div>
 </body>
 <script>
     var config = {
@@ -269,6 +286,7 @@
         }
     }
 
+
     var converter = new showdown.Converter();
     content = content.trim()
     
@@ -278,11 +296,34 @@
         content = "# " + config.dateFormat(new Date())+"\n\n\n";
     }
 
-    var displaybox = document.getElementById("content")
-    var editbox = document.getElementById("editor")
-    var journalButton = document.getElementById("journalbutton")
-    var editButton = document.getElementById("editbutton")
-    var saveButton = document.getElementById("savebutton")
+    var displaybox = document.getElementById("content");
+    var editbox = document.getElementById("editor");
+    var journalButton = document.getElementById("journalbutton");
+    var editButton = document.getElementById("editbutton");
+    var saveButton = document.getElementById("savebutton");
+    var images = document.getElementById("images");
+    var imageInput = document.getElementById("imginput");
+
+    imageInput.addEventListener("change", function () {
+        if (this.files && this.files[0]) {
+
+            var FR = new FileReader();
+
+            FR.addEventListener("load", function (e) {
+                var newImg = document.createElement("img");
+                newImg.classList.add("listimg");
+                newImg.src = e.target.result;
+                newImg.ondblclick = function() {
+                    if (editing) {
+                        newImg.parentElement.removeChild(newImg);
+                    }
+                }
+                images.appendChild(newImg);
+            });
+
+            FR.readAsDataURL(this.files[0]);
+        }
+    });
 
     displaybox.innerHTML = converter.makeHtml(content);
     editbox.innerText = content;
@@ -294,6 +335,8 @@
 
     var startEditMode = function () {
         editing = true;
+        imageInput.style.display='inline-block'
+        saveButton.style.display='inline-block'
         editButton.innerText = "Display"
         displaybox.classList.add("hidden");
         editbox.classList.remove("hidden");
@@ -301,6 +344,8 @@
 
     var startDisplayMode = function () {
         editing = false;
+        imageInput.style.display='none'
+        saveButton.style.display='none'
         editButton.innerText = "Edit"
         displaybox.innerHTML = converter.makeHtml(content);
         displaybox.classList.remove("hidden");
